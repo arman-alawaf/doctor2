@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>DMS - Doctor Management System</title>
+    <title>MyDoctorr - Doctor Management System</title>
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito:400,600,700,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -39,8 +39,7 @@
     <nav class="navbar" id="navbar">
         <div class="navbar-content">
             <a href="/" class="navbar-brand">
-                <i class="bi bi-hospital"></i>
-                <span>DMS</span>
+                <img src="https://mydoctorr.com/images/apps/logo1762790479.webp" alt="MyDoctorr Logo" style="height: 40px; width: auto;">
             </a>
             <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation">
                 <i class="bi bi-list" id="menuIcon"></i>
@@ -50,6 +49,7 @@
                 <li><a href="#home" class="nav-link" onclick="closeMobileMenu()">Home</a></li>
                 <li><a href="#specialties" class="nav-link" onclick="closeMobileMenu()">Specialties</a></li>
                 <li><a href="#doctors" class="nav-link" onclick="closeMobileMenu()">Doctors</a></li>
+                <li><a href="#posts" class="nav-link" onclick="closeMobileMenu()">Health Tips</a></li>
                 <li><a href="#about" class="nav-link" onclick="closeMobileMenu()">About</a></li>
                 <li><a href="#contact" class="nav-link" onclick="closeMobileMenu()">Contact</a></li>
                 @if (Route::has('login'))
@@ -168,12 +168,20 @@
             </div>
             <div class="doctors-grid">
                 @forelse($doctors as $doctor)
-                <div class="doctor-card">
+                <div class="doctor-card" style="cursor: pointer;" onclick="window.location.href='{{ route('doctors.show', $doctor) }}'">
                     <div class="doctor-image">
-                        <i class="bi bi-person-circle"></i>
+                        @if($doctor->image)
+                            <img src="{{ asset('storage/' . $doctor->image) }}" alt="{{ $doctor->user->name }}" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'bi bi-person-circle\'></i>'">
+                        @else
+                            <i class="bi bi-person-circle"></i>
+                        @endif
                     </div>
                     <div class="doctor-info">
-                        <h3 class="doctor-name">{{ $doctor->user->name }}</h3>
+                        <h3 class="doctor-name">
+                            <a href="{{ route('doctors.show', $doctor) }}" style="text-decoration: none; color: inherit; transition: color 0.3s ease;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='inherit'">
+                                {{ $doctor->user->name }}
+                            </a>
+                        </h3>
                         <span class="doctor-specialty">{{ $doctor->specialty->name ?? 'General' }}</span>
                         <div class="doctor-details">
                             <div class="doctor-detail-item">
@@ -188,12 +196,12 @@
                         <div class="doctor-fee">${{ number_format($doctor->consultation_fee ?? 0, 2) }}</div>
                         @auth
                             @if(auth()->user()->isPatient())
-                                <button type="button" class="doctor-btn" onclick="openAppointmentModal({{ $doctor->id }}, '{{ $doctor->user->name }}')">Book Appointment</button>
+                                <button type="button" class="doctor-btn" onclick="event.stopPropagation(); openAppointmentModal({{ $doctor->id }}, '{{ $doctor->user->name }}')">Book Appointment</button>
                             @else
-                                <a href="{{ route('register') }}" class="doctor-btn">Register as Patient</a>
+                                <a href="{{ route('register') }}" class="doctor-btn" onclick="event.stopPropagation();">Register as Patient</a>
                             @endif
                         @else
-                            <button type="button" class="doctor-btn" onclick="handleBookAppointment({{ $doctor->id }})">Book Appointment</button>
+                            <button type="button" class="doctor-btn" onclick="event.stopPropagation(); handleBookAppointment({{ $doctor->id }})">Book Appointment</button>
                         @endauth
                     </div>
                 </div>
@@ -212,12 +220,73 @@
                     </div>
     </section>
 
+    <!-- Posts/Blog Section -->
+    <section class="section posts-section" id="posts">
+        <div class="container">
+            <div class="section-title">
+                <h2><i class="bi bi-journal-text"></i> Health Tips & Blog Posts</h2>
+                <p>Expert advice and insights from our doctors</p>
+            </div>
+            <div class="posts-grid">
+                @forelse($posts as $post)
+                <div class="post-card">
+                    <div class="post-image">
+                        @if($post->image)
+                            <img src="{{ $post->image }}" alt="{{ $post->title }}" onerror="this.src='https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800'">
+                        @else
+                            <i class="bi bi-image"></i>
+                        @endif
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <span class="post-author">
+                                <i class="bi bi-person-circle"></i> {{ $post->doctor->user->name }}
+                            </span>
+                            <span class="post-date">
+                                <i class="bi bi-calendar"></i> {{ $post->created_at->format('M d, Y') }}
+                            </span>
+                        </div>
+                        <h3 class="post-title">{{ $post->title }}</h3>
+                        <p class="post-description">{{ Str::limit($post->description, 120) }}</p>
+                        <div class="post-footer">
+                            <span class="post-views">
+                                <i class="bi bi-eye"></i> {{ $post->views }} views
+                            </span>
+                            <a href="{{ route('posts.show', $post) }}" class="post-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <div class="post-card empty">
+                    <div class="post-content">
+                        <i class="bi bi-journal-x" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                        <h3>No Posts Available</h3>
+                        <p>Check back soon for health tips and blog posts from our doctors.</p>
+                    </div>
+                </div>
+                @endforelse
+            </div>
+            @if($posts->count() > 0)
+            <div class="text-center mt-4">
+                <a href="{{ route('posts.index') }}" class="btn-primary-nav">
+                    View All Posts <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            @endif
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer" id="contact">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3><i class="bi bi-hospital"></i> DMS</h3>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                        <img src="https://mydoctorr.com/images/apps/logo1762790479.webp" alt="MyDoctorr Logo" style="height: 50px; width: auto;">
+                    </div>
+                    <h3>MyDoctorr</h3>
                     <p>Your trusted platform for managing doctor appointments. We connect patients with qualified healthcare professionals.</p>
                     <div class="footer-social">
                         <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
@@ -257,7 +326,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; {{ date('Y') }} Doctor Management System. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} MyDoctorr. All rights reserved.</p>
             </div>
         </div>
     </footer>

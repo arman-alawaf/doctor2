@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>DMS - Doctor Management System</title>
+    <title>MyDoctorr - Doctor Management System</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -22,7 +22,7 @@
         <nav class="navbar navbar-expand-md navbar-dark shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <i class="bi bi-hospital"></i> DMS
+                    <img src="https://mydoctorr.com/images/apps/logo1762790479.webp" alt="MyDoctorr Logo" style="height: 40px; width: auto;">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -57,6 +57,9 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('doctor.appointments') }}"><i class="bi bi-calendar-check"></i> Appointments</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('doctor.posts') }}"><i class="bi bi-journal-text"></i> Posts</a>
                                 </li>
                             @elseif(Auth::user()->isPatient())
                                 <li class="nav-item">

@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SpecialtySeeder::class,
             DoctorSeeder::class,
+            PostSeeder::class,
         ]);
 
         // Create an admin user if it doesn't exist

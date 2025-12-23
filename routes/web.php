@@ -7,6 +7,7 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\SpecialtyController;
+use App\Http\Controllers\PostController;
 
 Route::get('/', function () {
     $specialties = \App\Models\Specialty::withCount('doctors')->take(8)->get();
@@ -14,7 +15,12 @@ Route::get('/', function () {
         ->with(['user', 'specialty'])
         ->take(6)
         ->get();
-    return view('welcome', compact('specialties', 'doctors'));
+    $posts = \App\Models\Post::where('status', 'published')
+        ->with(['doctor.user', 'doctor.specialty'])
+        ->latest()
+        ->take(6)
+        ->get();
+    return view('welcome', compact('specialties', 'doctors', 'posts'));
 });
 
 Auth::routes();
@@ -24,6 +30,9 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 // Public routes
 Route::get('/specialties', [SpecialtyController::class, 'index'])->name('specialties.index');
 Route::get('/specialties/{specialty}', [SpecialtyController::class, 'show'])->name('specialties.show');
+Route::get('/doctors/{doctor}', [DoctorController::class, 'showPublic'])->name('doctors.show');
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
 Route::post('/book-appointment/{doctor}', function (\App\Models\Doctor $doctor) {
     session(['booking_doctor_id' => $doctor->id]);
     return response()->json(['success' => true, 'doctor_id' => $doctor->id]);
@@ -79,6 +88,19 @@ Route::middleware(['auth', 'role:Doctor'])->prefix('doctor')->name('doctor.')->g
     Route::put('/profile', [DoctorController::class, 'updateProfile'])->name('update-profile');
     Route::get('/appointments', [DoctorController::class, 'appointments'])->name('appointments');
     Route::put('/appointments/{appointment}/status', [DoctorController::class, 'updateAppointmentStatus'])->name('appointments.update-status');
+    
+    // Post routes for doctors
+    Route::get('/posts', function() {
+        $posts = \App\Models\Post::where('doctor_id', auth()->user()->doctor->id)
+            ->latest()
+            ->paginate(10);
+        return view('posts.doctor-index', compact('posts'));
+    })->name('posts');
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 });
 
 // Patient routes

@@ -8,6 +8,7 @@ use App\Models\Specialty;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -114,9 +115,27 @@ class AdminController extends Controller
             'license_number' => 'required|string|unique:doctors,license_number,' . $doctor->id,
             'experience_years' => 'required|integer|min:0',
             'bio' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+            'education' => 'nullable|string|max:1000',
+            'hospital_clinic_name' => 'nullable|string|max:255',
+            'working_hours' => 'nullable|string|max:255',
+            'languages' => 'nullable|string|max:255',
+            'certifications' => 'nullable|string|max:1000',
             'consultation_fee' => 'required|numeric|min:0',
             'status' => 'required|in:active,inactive',
         ]);
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($doctor->image) {
+                Storage::disk('public')->delete($doctor->image);
+            }
+            $validated['image'] = $request->file('image')->store('doctors', 'public');
+        } else {
+            unset($validated['image']);
+        }
 
         $doctor->update($validated);
 

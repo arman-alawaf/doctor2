@@ -11,6 +11,25 @@
                         @csrf
                         @method('PUT')
 
+                        <!-- Profile Image Section -->
+                        <div class="mb-3">
+                            <label class="form-label">Profile Image</label>
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                @if($doctor->image)
+                                    <img src="{{ asset('storage/' . $doctor->image) }}" alt="Profile Image" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #667eea;">
+                                @else
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-light" style="width: 80px; height: 80px; border: 2px solid #667eea;">
+                                        <i class="bi bi-person-circle" style="font-size: 2.5rem; color: #667eea;"></i>
+                                    </div>
+                                @endif
+                            </div>
+                            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">
+                            <small class="form-text text-muted">Upload a profile picture (Max: 2MB, JPG/PNG/GIF)</small>
+                            @error('image')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label">Doctor Name</label>
                             <input type="text" class="form-control" value="{{ $doctor->user->name }}" disabled>
@@ -44,6 +63,64 @@
                             @enderror
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $doctor->phone) }}" placeholder="+1234567890">
+                                @error('phone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="hospital_clinic_name" class="form-label">Hospital/Clinic Name</label>
+                                <input type="text" class="form-control @error('hospital_clinic_name') is-invalid @enderror" id="hospital_clinic_name" name="hospital_clinic_name" value="{{ old('hospital_clinic_name', $doctor->hospital_clinic_name) }}" placeholder="e.g., City General Hospital">
+                                @error('hospital_clinic_name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control @error('address') is-invalid @enderror" id="address" name="address" rows="2" placeholder="Clinic/Hospital address">{{ old('address', $doctor->address) }}</textarea>
+                            @error('address')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="working_hours" class="form-label">Working Hours</label>
+                            <input type="text" class="form-control @error('working_hours') is-invalid @enderror" id="working_hours" name="working_hours" value="{{ old('working_hours', $doctor->working_hours) }}" placeholder="e.g., Mon-Fri: 9 AM - 5 PM">
+                            @error('working_hours')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="education" class="form-label">Education</label>
+                            <textarea class="form-control @error('education') is-invalid @enderror" id="education" name="education" rows="2" placeholder="e.g., MBBS, MD in Cardiology, etc.">{{ old('education', $doctor->education) }}</textarea>
+                            @error('education')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="certifications" class="form-label">Certifications</label>
+                            <textarea class="form-control @error('certifications') is-invalid @enderror" id="certifications" name="certifications" rows="2" placeholder="e.g., Board Certified, Fellowship in...">{{ old('certifications', $doctor->certifications) }}</textarea>
+                            @error('certifications')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="languages" class="form-label">Languages Spoken</label>
+                            <input type="text" class="form-control @error('languages') is-invalid @enderror" id="languages" name="languages" value="{{ old('languages', $doctor->languages) }}" placeholder="e.g., English, Spanish, French">
+                            @error('languages')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <div class="mb-3">
                             <label for="bio" class="form-label">Bio</label>
                             <textarea class="form-control @error('bio') is-invalid @enderror" id="bio" name="bio" rows="3">{{ old('bio', $doctor->bio) }}</textarea>
@@ -54,7 +131,10 @@
 
                         <div class="mb-3">
                             <label for="consultation_fee" class="form-label">Consultation Fee</label>
-                            <input type="number" step="0.01" class="form-control @error('consultation_fee') is-invalid @enderror" id="consultation_fee" name="consultation_fee" value="{{ old('consultation_fee', $doctor->consultation_fee) }}" required>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control @error('consultation_fee') is-invalid @enderror" id="consultation_fee" name="consultation_fee" value="{{ old('consultation_fee', $doctor->consultation_fee) }}" required>
+                            </div>
                             @error('consultation_fee')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

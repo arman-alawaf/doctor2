@@ -16,6 +16,14 @@ class Doctor extends Model
         'license_number',
         'experience_years',
         'bio',
+        'image',
+        'phone',
+        'address',
+        'education',
+        'hospital_clinic_name',
+        'working_hours',
+        'languages',
+        'certifications',
         'consultation_fee',
         'status',
     ];
@@ -49,5 +57,13 @@ class Doctor extends Model
     public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class);
+    }
+
+    /**
+     * Get posts for this doctor
+     */
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
     }
 }
