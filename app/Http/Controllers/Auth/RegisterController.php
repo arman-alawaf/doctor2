@@ -77,4 +77,21 @@ class RegisterController extends Controller
             'address' => $data['address'] ?? null,
         ]);
     }
+
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(\Illuminate\Http\Request $request, $user)
+    {
+        // Check if user is booking an appointment and is a patient
+        if (session('booking_doctor_id') && $user->isPatient()) {
+            return redirect()->route('book.appointment.redirect');
+        }
+        
+        return redirect($this->redirectPath());
+    }
 }

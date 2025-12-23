@@ -9,7 +9,12 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\SpecialtyController;
 
 Route::get('/', function () {
-    return view('welcome');
+    $specialties = \App\Models\Specialty::withCount('doctors')->take(8)->get();
+    $doctors = \App\Models\Doctor::where('status', 'active')
+        ->with(['user', 'specialty'])
+        ->take(6)
+        ->get();
+    return view('welcome', compact('specialties', 'doctors'));
 });
 
 Auth::routes();
@@ -19,6 +24,19 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 // Public routes
 Route::get('/specialties', [SpecialtyController::class, 'index'])->name('specialties.index');
 Route::get('/specialties/{specialty}', [SpecialtyController::class, 'show'])->name('specialties.show');
+Route::post('/book-appointment/{doctor}', function (\App\Models\Doctor $doctor) {
+    session(['booking_doctor_id' => $doctor->id]);
+    return response()->json(['success' => true, 'doctor_id' => $doctor->id]);
+})->middleware('web')->name('book.appointment');
+
+Route::get('/book-appointment-redirect', function () {
+    $doctorId = session('booking_doctor_id');
+    if ($doctorId && auth()->check() && auth()->user()->isPatient()) {
+        session()->keep('booking_doctor_id');
+        return redirect('/#doctors')->with('open_booking_modal', true);
+    }
+    return redirect('/');
+})->middleware('auth')->name('book.appointment.redirect');
 
 // Admin routes
 Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->group(function () {

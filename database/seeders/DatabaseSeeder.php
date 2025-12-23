@@ -17,14 +17,17 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             SpecialtySeeder::class,
+            DoctorSeeder::class,
         ]);
 
-        // Create an admin user
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@dms.com',
-            'password' => bcrypt('password'),
-            'role' => 'Admin',
-        ]);
+        // Create an admin user if it doesn't exist
+        User::firstOrCreate(
+            ['email' => 'admin@dms.com'],
+            [
+                'name' => 'Admin User',
+                'password' => bcrypt('password'),
+                'role' => 'Admin',
+            ]
+        );
     }
 }

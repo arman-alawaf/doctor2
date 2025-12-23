@@ -37,4 +37,21 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
+    /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(\Illuminate\Http\Request $request, $user)
+    {
+        // Check if user is booking an appointment
+        if (session('booking_doctor_id') && $user->isPatient()) {
+            return redirect()->route('book.appointment.redirect');
+        }
+        
+        return redirect()->intended($this->redirectPath());
+    }
 }

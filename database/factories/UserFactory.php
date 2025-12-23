@@ -29,7 +29,41 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'role' => 'Patient',
+            'phone' => fake()->phoneNumber(),
+            'date_of_birth' => fake()->date('Y-m-d', '-18 years'),
+            'address' => fake()->address(),
         ];
+    }
+
+    /**
+     * Indicate that the user is an admin.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'Admin',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a doctor.
+     */
+    public function doctor(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'Doctor',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a patient.
+     */
+    public function patient(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'Patient',
+        ]);
     }
 
     /**
