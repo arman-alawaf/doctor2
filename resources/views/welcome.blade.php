@@ -232,7 +232,7 @@
                 <div class="post-card">
                     <div class="post-image">
                         @if($post->image)
-                            <img src="{{ $post->image }}" alt="{{ $post->title }}" onerror="this.src='https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800'">
+                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}">
                         @else
                             <i class="bi bi-image"></i>
                         @endif

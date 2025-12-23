@@ -5,7 +5,7 @@
     <div class="col-md-8">
         <div class="card">
             @if($post->image)
-            <img src="{{ $post->image }}" alt="{{ $post->title }}" class="card-img-top" style="max-height: 400px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800'">
+            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="card-img-top" style="max-height: 400px; object-fit: cover;">
             @endif
             <div class="card-body">
                 <div class="post-meta-custom mb-3">

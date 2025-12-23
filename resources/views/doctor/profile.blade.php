@@ -55,13 +55,13 @@
                             <h5 class="mb-3"><i class="bi bi-info-circle"></i> Basic Information</h5>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Name</label>
-                                    <input type="text" class="form-control" value="{{ auth()->user()->name }}" disabled>
-                                </div>
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" value="{{ auth()->user()->name }}" disabled>
+                            </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="text" class="form-control" value="{{ auth()->user()->email }}" disabled>
+                                <label class="form-label">Email</label>
+                                <input type="text" class="form-control" value="{{ auth()->user()->email }}" disabled>
                                 </div>
                             </div>
 
@@ -76,14 +76,14 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="specialty_id" class="form-label">Specialty <span class="text-danger">*</span></label>
-                                    <select class="form-control @error('specialty_id') is-invalid @enderror" id="specialty_id" name="specialty_id" required>
-                                        @foreach($specialties as $specialty)
-                                            <option value="{{ $specialty->id }}" {{ old('specialty_id', $doctor->specialty_id) == $specialty->id ? 'selected' : '' }}>{{ $specialty->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('specialty_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                <select class="form-control @error('specialty_id') is-invalid @enderror" id="specialty_id" name="specialty_id" required>
+                                    @foreach($specialties as $specialty)
+                                        <option value="{{ $specialty->id }}" {{ old('specialty_id', $doctor->specialty_id) == $specialty->id ? 'selected' : '' }}>{{ $specialty->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('specialty_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                                 </div>
                             </div>
 
@@ -102,8 +102,8 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="license_number" class="form-label">License Number <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('license_number') is-invalid @enderror" id="license_number" name="license_number" value="{{ old('license_number', $doctor->license_number) }}" required>
-                                    @error('license_number')
+                                <input type="text" class="form-control @error('license_number') is-invalid @enderror" id="license_number" name="license_number" value="{{ old('license_number', $doctor->license_number) }}" required>
+                                @error('license_number')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>

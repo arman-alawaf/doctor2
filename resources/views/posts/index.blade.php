@@ -12,7 +12,7 @@
         <div class="card h-100 post-card-custom">
             <div class="post-image-custom">
                 @if($post->image)
-                    <img src="{{ $post->image }}" alt="{{ $post->title }}" class="card-img-top" style="height: 200px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800'">
+                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
                 @else
                     <div class="d-flex align-items-center justify-content-center" style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                         <i class="bi bi-image text-white" style="font-size: 3rem;"></i>
